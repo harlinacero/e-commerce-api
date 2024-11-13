@@ -40,7 +40,7 @@ namespace e_commerce_domain.useCases
             }
             else
             {
-                throw new ArgumentNullException($"El producto {product.Name} no existe en el inventario");
+                throw new ArgumentNullException($"El producto {product.GetName} no existe en el inventario");
             }
 
         }
@@ -108,7 +108,7 @@ namespace e_commerce_domain.useCases
         /// <param name="name"></param>
         public void RemoveProduct(string name)
         {
-            var oproduct = _shoppingCar.Products.FirstOrDefault(p => p.Name.ToLowerInvariant() == name.ToLowerInvariant());
+            var oproduct = _shoppingCar.Products.FirstOrDefault(p => p.GetName().ToLowerInvariant() == name.ToLowerInvariant());
             if (oproduct != null)
             {
                 _shoppingCar.Products.Remove(oproduct);

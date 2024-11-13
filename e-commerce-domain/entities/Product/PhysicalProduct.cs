@@ -11,20 +11,108 @@ namespace e_commerce_domain.entities.Product
         /// <summary>
         /// Peso
         /// </summary>
-        public decimal Weight { get; set; }
+        private decimal weight;
         /// <summary>
         /// Altura
         /// </summary>
-        public decimal Height { get; set; }
+        private decimal height;
         /// <summary>
         /// Ancho
         /// </summary>
-        public decimal Width { get; set; }
+        private decimal width;
         /// <summary>
         /// Largo
         /// </summary>
-        public decimal Lenght { get; set; }
-        public decimal BaseShipingCost { get; set; }
+        private decimal lenght;
+        /// <summary>
+        /// Costo básico del envio
+        /// </summary>
+        private decimal baseShipingCost;
+
+        public PhysicalProduct(string name, string description, decimal grossValue, decimal discPercentaje, decimal taxPercentaje, int stock,
+            decimal weight, decimal height, decimal width, decimal lenght, decimal baseShipingCost) 
+            : base(name, description, grossValue, discPercentaje, taxPercentaje, stock)
+        {
+            this.weight = weight;
+            this.height = height;
+            this.width = width;
+            this.lenght = lenght;
+            this.baseShipingCost = baseShipingCost;
+        }
+
+        public decimal GetWeight()
+        {
+            return weight;
+        }
+        public void SetWeight(decimal value)
+        {
+            if (value <= 0)
+            {
+                throw new ArgumentOutOfRangeException("El peso del producto no puede ser menor o igual a 0");
+            }
+
+            weight = value;
+        }
+
+        public decimal GetHeight()
+        {
+            return height;
+        }
+        public void SetHeight(decimal value)
+        {
+            if (value <= 0)
+            {
+                throw new ArgumentOutOfRangeException("La altura del producto no puede ser menor o igual a 0");
+            }
+
+            height = value;
+        }
+
+
+        public decimal GetWidth()
+        {
+            return width;
+        }
+
+        public void SetWidth(decimal value)
+        {
+            if (value <= 0)
+            {
+                throw new ArgumentOutOfRangeException("El ancho del producto no puede ser menor o igual a 0");
+            }
+
+            width = value;
+        }
+
+
+        public decimal GetLenght()
+        {
+            return lenght;
+        }
+
+        public void SetLenght(decimal value)
+        {
+            if (value <= 0)
+            {
+                throw new ArgumentOutOfRangeException("El largo del producto no puede ser menor o igual a 0");
+            }
+
+            lenght = value;
+        }
+
+
+        public decimal GetBaseShipingCost()
+        {
+            return baseShipingCost;
+        }
+
+        /// <summary>
+        /// Costo básico del envio
+        /// </summary>
+        public void SetBaseShipingCost(decimal value)
+        {
+            baseShipingCost = value;
+        }
 
         /// <summary>
         /// Sobre escritura del método: Calcula el precio total del producto teniendo en cuenta los costos de envio
@@ -32,11 +120,11 @@ namespace e_commerce_domain.entities.Product
         /// <returns></returns>
         public override decimal CalculateTotalValue()
         {
-            var taxvalue = GrossValue * TaxPercentaje / 100;
-            var disccountValue = GrossValue * DiscPercentaje / 100;
-            var shippingCost = BaseShipingCost * (Width * Height * Lenght);
+            var taxvalue = GetGrossValue() * GetTaxPercentaje() / 100;
+            var disccountValue = GetGrossValue() * GetDisccounPercentaje() / 100;
+            var shippingCost = GetBaseShipingCost() * (GetWidth() * GetHeight() * GetLenght());
 
-            return GrossValue + taxvalue - disccountValue + shippingCost;
+            return GetGrossValue() + taxvalue - disccountValue + shippingCost;
         }
 
         /// <summary>
@@ -45,10 +133,10 @@ namespace e_commerce_domain.entities.Product
         /// <returns></returns>
         public override string ShowInfo()
         {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine($"El producto {Name} de tipo {nameof(PhysicalProduct)} ");
-            stringBuilder.AppendLine($"Tiene un peso total de {Weight} Kg");
-            stringBuilder.AppendLine($"Y mide {Height} x {Width} + {Lenght} cm en total ");
+            StringBuilder stringBuilder = new();
+            stringBuilder.AppendLine($"El producto {name} de tipo {nameof(PhysicalProduct)} ");
+            stringBuilder.AppendLine($"Tiene un peso total de {weight} Kg");
+            stringBuilder.AppendLine($"Y mide {height} x {width} + {lenght} cm en total ");
             stringBuilder.AppendLine($"Su costo total es de {CalculateTotalValue()}");
             stringBuilder.AppendLine($"Teniendo en cuenta su volumen y costos de envio");
 

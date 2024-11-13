@@ -1,6 +1,4 @@
-﻿using e_commerce_domain.entities.Order;
-
-namespace e_commerce_domain.entities.Pay
+﻿namespace e_commerce_domain.entities.Pay
 {
     /// <summary>
     /// Pago de la orden

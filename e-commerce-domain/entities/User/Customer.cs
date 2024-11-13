@@ -8,18 +8,86 @@
         /// <summary>
         /// Primer Nombre
         /// </summary>
-        public string FirstName { get; set; }
+        private string firstName;
         /// <summary>
         /// Apellido
         /// </summary>
-        public string LastName { get; set; }
+        private string lastName;
         /// <summary>
         /// Dirección
         /// </summary>
-        public string Address { get; set; }
+        private string address;
+
+
         /// <summary>
         /// Teléfono
         /// </summary>
-        public string Phone { get; set; }
+        private string phone;
+
+        public Customer(string username, string email, string password, string firstname, string lastname, string address)
+            : base(username, email, password)
+        {
+            this.firstName = firstname;
+            this.lastName = lastname;
+            this.address = address;
+        }
+
+        public string GetFirstName()
+        {
+            return firstName;
+        }
+        public void SetFirstName(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                throw new ArgumentNullException("El Primer nombre del usuario no puede ser null o vacio");
+            }
+
+            firstName = value;
+        }
+
+
+        public string GetLastName()
+        {
+            return lastName;
+        }
+
+        public void SetLastName(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                throw new ArgumentNullException("El apellido del usuario no puede ser null o vacio");
+            }
+
+            lastName = value;
+        }
+
+        public string GetAddress()
+        {
+            return address;
+        }
+
+        public void SetAddress(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                throw new ArgumentNullException("La dirección del usuario no puede ser null o vacio");
+            }
+
+            address = value;
+        }
+
+        public string GetPhone()
+        {
+            return phone;
+        }
+        public void SetPhone(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                throw new ArgumentNullException("El teléfono del usuario no puede ser null o vacio");
+            }
+            phone = value;
+        }
     }
 }
