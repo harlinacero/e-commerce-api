@@ -2,6 +2,7 @@
 using e_commerce_domain.entities.ShoppingCar;
 using e_commerce_domain.entities.User;
 using e_commerce_domain.repositories;
+using e_commerce_domain.services.Contracts;
 using System.Text;
 
 namespace e_commerce_domain.useCases
@@ -34,15 +35,11 @@ namespace e_commerce_domain.useCases
         public void AddProduct(ProductBase product)
         {
             var oproduct = _productRepository.GetProductById(product.Id);
-            if (oproduct != null)
-            {
-                _shoppingCar.Products.Add(oproduct);
-            }
-            else
+            if (oproduct == null)
             {
                 throw new ArgumentNullException($"El producto {product.GetName} no existe en el inventario");
             }
-
+            _shoppingCar.Products.Add(oproduct);
         }
 
         /// <summary>
@@ -53,15 +50,11 @@ namespace e_commerce_domain.useCases
         public void AddProduct(Guid idProduct)
         {
             var oproduct = _productRepository.GetProductById(idProduct);
-            if (oproduct != null)
-            {
-                _shoppingCar.Products.Add(oproduct);
-            }
-            else
+            if (oproduct == null)
             {
                 throw new ArgumentNullException($"El producto con id {idProduct} no existe en el inventario");
-
             }
+            _shoppingCar.Products.Add(oproduct);
 
         }
 
@@ -73,14 +66,11 @@ namespace e_commerce_domain.useCases
         public void AddProduct(string name)
         {
             var oproduct = _productRepository.GetProductByName(name);
-            if (oproduct != null)
-            {
-                _shoppingCar.Products.Add(oproduct);
-            }
-            else
+            if (oproduct == null)
             {
                 throw new ArgumentNullException($"El producto {name} no existe en el inventario");
             }
+            _shoppingCar.Products.Add(oproduct);
 
         }
 
@@ -91,15 +81,11 @@ namespace e_commerce_domain.useCases
         public void RemoveProduct(Guid idProduct)
         {
             var oproduct = _shoppingCar.Products.FirstOrDefault(p => p.Id == idProduct);
-            if (oproduct != null)
-            {
-                _shoppingCar.Products.Remove(oproduct);
-            }
-            else
+            if (oproduct == null)
             {
                 throw new ArgumentNullException($"El producto con id {idProduct} no existe en el inventario");
             }
-
+            _shoppingCar.Products.Remove(oproduct);
         }
 
         /// <summary>
@@ -109,18 +95,16 @@ namespace e_commerce_domain.useCases
         public void RemoveProduct(string name)
         {
             var oproduct = _shoppingCar.Products.FirstOrDefault(p => p.GetName().ToLowerInvariant() == name.ToLowerInvariant());
-            if (oproduct != null)
-            {
-                _shoppingCar.Products.Remove(oproduct);
-            }
-            else
+            if (oproduct == null)
             {
                 throw new ArgumentNullException($"El producto {name} no existe en el inventario");
             }
+            _shoppingCar.Products.Remove(oproduct);
+
 
         }
 
-       
+
         public decimal CalculateTotalValue()
         {
             decimal total = 0;
@@ -139,7 +123,7 @@ namespace e_commerce_domain.useCases
 
             foreach (var product in _shoppingCar.Products)
             {
-               stringBuilder.AppendLine(product.ShowInfo());
+                stringBuilder.AppendLine(product.ShowInfo());
             }
 
             return stringBuilder.ToString();

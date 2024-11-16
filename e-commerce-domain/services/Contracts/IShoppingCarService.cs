@@ -1,6 +1,6 @@
 ﻿using e_commerce_domain.entities.Product;
 
-namespace e_commerce_domain.useCases
+namespace e_commerce_domain.services.Contracts
 {
     public interface IShoppingCarService
     {

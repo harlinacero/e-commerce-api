@@ -1,6 +1,9 @@
-﻿using e_commerce_domain.entities.Product;
+﻿using e_commerce_domain.entities.Order;
+using e_commerce_domain.entities.Product;
 using e_commerce_domain.entities.User;
+using e_commerce_domain.enums;
 using e_commerce_domain.repositories;
+using e_commerce_domain.services.PayFactory;
 using e_commerce_domain.useCases;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,10 +16,11 @@ namespace e_commerce_api.Controllers
         private readonly ShoppingCarService _carService;
         private readonly DigitalProduct digitalProduct;
         private readonly PhysicalProduct physicalProduct;
-
+        private readonly Customer customer;
+        private readonly Order order;
         public ProductController()
         {
-            Customer customer = new Customer("Harlin", "harlina@mail.com", "harlin123", "harlin", "acero", "av123");
+            customer = new Customer("Harlin", "harlina@mail.com", "harlin123", "harlin", "acero", "av123");
 
             digitalProduct = new DigitalProduct("libro.pdf", "Libro digital", 300, 20, 10, 10, "PDF", 200)
             {
@@ -30,6 +34,17 @@ namespace e_commerce_api.Controllers
 
 
             ProductRepository productRepository = new(new List<ProductBase>() { digitalProduct, physicalProduct });
+            order = new()
+            {
+                Products = new List<ProductBase>()
+                {
+                    digitalProduct,
+                    physicalProduct,
+                },
+                Customer = customer,
+                Date = new DateTime()
+            };
+
             _carService = new ShoppingCarService(productRepository, customer);
         }
 
@@ -58,14 +73,33 @@ namespace e_commerce_api.Controllers
         [HttpGet("UpdateFormatProduct")]
         public ActionResult UpdateProductFormat(string format)
         {
-
-            var digitalProduct = new DigitalProduct("libro.pdf", "Libro digital", 300, 20, 10, 10, "PDF", 200)
-            {
-                Id = Guid.Parse("c2cef007-cbee-4875-8e6b-69900326ffad")
-            };
-
             digitalProduct.SetFileFormtat(format);
             return Ok($"El formato del producto digital {digitalProduct.GetName()} ha sido cambiado {digitalProduct.GetFileFormat()}");
+        }
+
+        [HttpGet("PayOrderWithCreditCar")]
+        public ActionResult PayOrderWithCreditCard(MethodPay methodPay)
+        {
+            PrepareOrder();
+            IPayProcess creditCarPay = PayProcessFactory.Create(methodPay, order);
+            creditCarPay.BeginPayProcess();
+            if (creditCarPay.IsPayProcessAvailable())
+            {
+                creditCarPay.ConfirmPay();
+                return Ok($"El pago fue realizado correctamente");
+            }
+
+            return BadRequest($"El pago con tarjeta de crédito de la orden {order.Id} no pudo ser procesado");
+        }
+
+        private void PrepareOrder()
+        {
+            order.State = "En Proceso";
+
+            foreach (var product in order.Products)
+            {
+                order.Total += product.CalculateTotalValue();
+            }
         }
     }
 }

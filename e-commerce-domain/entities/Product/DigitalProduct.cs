@@ -22,6 +22,7 @@ namespace e_commerce_domain.entities.Product
             string fileFormat, float size)
             : base(name, description, grossValue, discPercentaje, taxPercentaje, stock)
         {
+            this.Id = Guid.NewGuid();
             this.fileFormat = fileFormat;
             this.size = size;
         }

@@ -33,6 +33,7 @@ namespace e_commerce_domain.entities.Product
             decimal weight, decimal height, decimal width, decimal lenght, decimal baseShipingCost) 
             : base(name, description, grossValue, discPercentaje, taxPercentaje, stock)
         {
+            this.Id = Guid.NewGuid();
             this.weight = weight;
             this.height = height;
             this.width = width;

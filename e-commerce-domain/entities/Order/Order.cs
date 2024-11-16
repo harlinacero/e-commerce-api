@@ -15,7 +15,7 @@ namespace e_commerce_domain.entities.Order
         /// <summary>
         /// Lista de productos asociados a la orden
         /// </summary>
-        public IEnumerable<ProductBase> Products { get; set; }
+        public ICollection<ProductBase> Products { get; set; }
         /// <summary>
         /// Fecha de la orden
         /// </summary>
