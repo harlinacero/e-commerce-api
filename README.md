@@ -1,97 +1,67 @@
-# Encapsulamiento y abstracción
-En esta entrega se implementan los conceptos de Encapsulamiento y abstracción
+# Implementación de Interfaces y Clases Abstractas
+En esta entrega se implementan los conceptos de clases abstractas e Interfaces.
+Ya que mostrar el proceso interno de cada caso mediante el API Rest es un poco complicado, para esta entrega se ha creado un proyecto de consola que implementa la lógica correspondiente
+y permite conocer lo que sucede al interior de cada implementación.
 
-## Encapsulamiento
-Las clases base `ProductBase` y `UserBase` han cambiado los modificadores de acceso de sus atributos a protected, de forma que solo puedan ser usados directamente por sus clases derivadas.
-Para acceder a sus atributos, se debe realizar a través de los Setters y Getters. Los Setters, además realizan validaciones respectivas.
+## Clases abstractas
+Las clases abstracta `InventoryManager` contiene los métodos abstractos AddProduct, DeleteProduct y UpdateStock que deben ser implementados por sus clases hijas: `PhysicalInventoryManager` y `DigitalInventoryManager`.
 
-Clase ProductBase
+Clase `InventoryManager`
 
-![image](https://github.com/user-attachments/assets/cb027cea-87a4-4a95-a164-3844bab787a8)
+![image](https://github.com/user-attachments/assets/9e61ac81-e10f-4948-9ac2-242612319d6c)
 
-![image](https://github.com/user-attachments/assets/4c2861fa-54aa-4c46-9618-6636fdb4285e)
+Clase `PhysicalInventoryManager`
 
-Clase UserBase
+![image](https://github.com/user-attachments/assets/7ed16acd-56e3-429e-8e1f-e06737c0dcc5)
 
-![image](https://github.com/user-attachments/assets/89458b83-7bcf-4854-b6aa-f7e6daaf7a21)
+Clase `DigitalInventoryManager` 
 
-![image](https://github.com/user-attachments/assets/1e8c1faf-b070-4669-b95f-f707389ec935)
+![image](https://github.com/user-attachments/assets/a09f28f3-0ec1-45ab-9f5a-60ae50b041ef)
 
-Las Subclases `DigitalProduct` y `PhysicalProduct` también implementan el encapsulamiento agregando validaciones sobre sus atributos que son privados.
-
-Clase DigitalProduct
-
-![image](https://github.com/user-attachments/assets/6bc0105b-5942-457f-8c5a-f5368dec8366)
-
-Clase PhysicalProduct
-
-![image](https://github.com/user-attachments/assets/b500f1cc-c85e-4c24-b123-2e4ba7f93b1d)
-
-De la misma forma Las Subclases de la clase `UserBase` `Customer` y `Seller` implementan el encapsulamiento agregando validaciones sobre sus atributos que son privados.
-
-Clase Customer
-
-![image](https://github.com/user-attachments/assets/fab93a55-ee5e-4d90-9e22-1be627c723c3)
-
-
-## Abstracción
-Las clases base `ProductBase` y `UserBase` son además abstractas, lo que implica que no se pueden instanciar directamente. Además, los métodos abstractos que declaran, deben, obligatoriamente ser implementados por sus clases derivadas, 
-mientras que, los métodos implementados son heredados y pueden ser usados por sus clases hijas.
-
-Clase ProductBase
-
-![image](https://github.com/user-attachments/assets/1cb2fab1-c8fc-4895-92e8-2e9045ccc594)
-
-![image](https://github.com/user-attachments/assets/4743aa06-1123-4cfb-86ad-8c9f5a0957a3)
-
-Las Subclases `DigitalProduct` y `PhysicalProduct`
-Se sobre escriben los métods abstractos CalculateTotalValue y ShowInfo, y se usan los métodos heredados GetGrossValue, GetTaxPercentaje y GetDisccounPercentaje de la clase padre.
-
-![image](https://github.com/user-attachments/assets/9e121428-8db7-4e9b-8dc5-075e0cc06117)
-
-![image](https://github.com/user-attachments/assets/4c55d512-fb19-4b1f-b6cb-c75d28cda32a)
-
-
-
-Ejecución:
-
-
-## Ejecución del Proyecto
-
-Para ejecutar el proyecto, sigue estos pasos:
-
-1. **Clonar el repositorio**:
-    ```sh
-    git clone <URL_DEL_REPOSITORIO>
-    cd <NOMBRE_DEL_REPOSITORIO>
-    ```
-
-
-## Uso
-
+### Ejecucución
 Para ejecutar la aplicación se requiere de .net 6.
-Al ajecutarlo se iniciará una ventana en el navegador con la interfaz swagger, la cual tiene un controlador con dos endpoints.
-En el primero, Product, al ejecutarlo se agregan los productos al carro de compra, se calcula su valor y se muestra la información respectiva. 
-Recordando que estos métodos eran abstractos en la clase base e implementados en las clases derivadas, cada uno con su propia lógica, y a su vez, al interior de ellos, usando los métodos heredados de la clase base.
+Establecer el proyecto e-commerce-console como proyecto de inicio y ejecutarlo.
 
-![image](https://github.com/user-attachments/assets/2534076d-099d-4b01-a5f9-79329766489d)
+![image](https://github.com/user-attachments/assets/70b8b801-92ce-47b9-ba73-039f6cb67f64)
 
-Las funionalidades implementadas en la tarea anterior no han sido modificadas.
-
-![image](https://github.com/user-attachments/assets/734dbe49-0ec0-4f6a-a720-2f6b01ceb187)
+La ejecución por consola arroja la siguiente salida:
+![image](https://github.com/user-attachments/assets/e8f474b1-0288-45b7-bd39-8ea5c3b4c5a6)
 
 
-En el segundo endpoint Product/UpdateFormatProduct, se solicita agregar un nuevo formato para modificar el del Producto Digital cargado por defecto.
+## Interfaces
+Se ha creado la interaz `IPayProcess` que define los métodos BeginPayProcess, IsPayProcessAvailable y ConfirmPay, los cuales deben ser implementados por las clases concretas `PayPalPay`, `CreditCardPay`, 
+`CashPay` y `TransferPay`, cada una, con su propia lógica y condiciones. Para gestionar mejor la creación de estos objetos se ha hecho uso del patrón Factory, el cual, se encargará de esta lógica.
+Tanto la interfaz como las clases se encuentran en la carpeta PayFactory de la carpeta servicios en el proyecto e-commerce-domain.
 
-![image](https://github.com/user-attachments/assets/02177d8d-fc89-4dc6-8c76-2b7b221502ea)
+![image](https://github.com/user-attachments/assets/81363ed3-3a18-489d-be5d-e9cfc4ed38a6)
 
-La lógica de la clase DigitalProduct, verifica si el formato es válido o no para permitir el cambio:
+Clase fábrica: `PayProcessFactory`
 
-Formato Válido
+![image](https://github.com/user-attachments/assets/2ec7a3f7-442e-4e8e-ad10-a3fe54cad6cc)
 
-![image](https://github.com/user-attachments/assets/a2f61642-c3df-4a51-acfa-9b4193bf1f04)
+Como se observa, el método Create, recibe como parámetro un método de pago y una orden de compra. De acuerdo con el método seleccionado, se retorna una implementación concreta de la interfaz `IPayProcess`.
 
-Formato inválido
+Interfaz `IPayProcess` 
 
-![image](https://github.com/user-attachments/assets/e4c0740c-7d25-432b-a686-d56d24ea0ade)
+![image](https://github.com/user-attachments/assets/9d0b2ff4-11a1-4cef-b15e-f705ab436269)
+
+Clase `PayPalPay`
+
+![image](https://github.com/user-attachments/assets/4e485bac-b33f-47ed-98f2-b95c8cfb2b53)
+
+Clase `CreditCardPay`
+
+![image](https://github.com/user-attachments/assets/1980d8da-036e-454d-8756-19127414cd7c)
+
+### Ejecución
+Para ejecutar la aplicación se requiere de .net 6.
+Establecer el proyecto e-commerce-console como proyecto de inicio y ejecutarlo.
+El método PayOrderProcess en la clase main del proyecto de consola contiene la lógica para la creación de órdenes de pago con diferente número de productos y cada orden con ún método de pago diferente.
+
+![image](https://github.com/user-attachments/assets/48cd9d1a-9227-4622-966a-753b22d3fdd8)
+
+La ejecución de este método, arroja la siguiente salida por consola.
+![image](https://github.com/user-attachments/assets/d1c73906-c5c2-4ccf-9416-4a2c4dafa0fb)
+
+
 
