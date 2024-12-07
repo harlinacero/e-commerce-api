@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using System.Text;
-using System.Xml.Linq;
+﻿using System.Text;
 
 namespace e_commerce_domain.entities.Product
 {

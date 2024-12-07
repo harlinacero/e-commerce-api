@@ -1,6 +1,3 @@
-using e_commerce_domain.repositories;
-using e_commerce_domain.useCases;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

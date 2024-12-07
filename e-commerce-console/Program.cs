@@ -2,6 +2,8 @@
 using e_commerce_domain.entities.Product;
 using e_commerce_domain.entities.User;
 using e_commerce_domain.enums;
+using e_commerce_domain.observer;
+using e_commerce_domain.observer.contracts;
 using e_commerce_domain.services.PayFactory;
 using e_commerce_domain.useCases;
 
@@ -21,28 +23,34 @@ internal class Program
         PayOrderProcess();
         Console.WriteLine();
         Console.WriteLine("----------------- Fin del pago -----------------");
+        Console.ReadLine();
     }
 
     private static void AbstractManagerInventory()
     {
-        InventoryManager digitalInventoryManager = new DigitalInventoryManager();
-        InventoryManager physicalInventoryManager = new PhysicalInventoryManager();
+        //InventoryManager digitalInventoryManager = new DigitalInventoryManager();
+        //InventoryManager physicalInventoryManager = new PhysicalInventoryManager();
 
-        var digitalProduct = new DigitalProduct("libro.pdf", "Libro digital", 300, 20, 10, 10, "PDF", 200);
-        var physicalProduct = new PhysicalProduct("libro", "Libro pasta dura", 300, 20, 10, 10, 150, 20, 35, 3, 50);
+        //// Agregar observadores
+        //digitalInventoryManager.AddObserver(new InventoryObserver());
+        //physicalInventoryManager.AddObserver(new InventoryObserver());
+
+
+        //var digitalProduct = new DigitalProduct("libro.pdf", "Libro digital", 300, 20, 10, 10, "PDF", 200);
+        //var physicalProduct = new PhysicalProduct("libro", "Libro pasta dura", 300, 20, 10, 10, 150, 20, 35, 3, 50);
         
         
-        Console.WriteLine();
-        digitalInventoryManager.AddProduct(digitalProduct);
-        physicalInventoryManager.AddProduct(physicalProduct);
+        //Console.WriteLine();
+        //digitalInventoryManager.AddProduct(digitalProduct);
+        //physicalInventoryManager.AddProduct(physicalProduct);
        
-        Console.WriteLine();
-        digitalInventoryManager.UpdateStock(digitalProduct.Id, 50);
-        physicalInventoryManager.UpdateStock(physicalProduct.Id, 50);
+        //Console.WriteLine();
+        //digitalInventoryManager.UpdateStock(digitalProduct.Id, 50);
+        //physicalInventoryManager.UpdateStock(physicalProduct.Id, 50);
         
-        Console.WriteLine();
-        digitalInventoryManager.DeleteProduct(digitalProduct.Id);
-        physicalInventoryManager.DeleteProduct(physicalProduct.Id);
+        //Console.WriteLine();
+        //digitalInventoryManager.DeleteProduct(digitalProduct.Id);
+        //physicalInventoryManager.DeleteProduct(physicalProduct.Id);
 
     }
 

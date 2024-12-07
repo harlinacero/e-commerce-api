@@ -1,21 +1,31 @@
 ﻿using e_commerce_domain.entities.Product;
+using e_commerce_domain.repositories;
 
-namespace e_commerce_domain.useCases
+namespace e_commerce_infraestructure.Reposotory
 {
     public class DigitalInventoryManager : InventoryManager
     {
         private readonly ICollection<DigitalProduct> _productRepository;
-
-        public DigitalInventoryManager()
+        public static DigitalInventoryManager _instance;
+        private DigitalInventoryManager()
         {
             _productRepository = new List<DigitalProduct>();
+        }
+
+        public static DigitalInventoryManager GetInstance()
+        {
+            if (_instance == null)
+            {
+                _instance = new DigitalInventoryManager();
+            }
+            return _instance;
         }
 
         public override void AddProduct(ProductBase product)
         {
             DigitalProduct digitalProduct = CreateProduct(product);
             _productRepository.Add(digitalProduct);
-            Console.WriteLine($"El producto digital {product.GetName()} ha sido agregado al inventario");
+            NotifyProductAdded(product);
         }
 
         private DigitalProduct CreateProduct(ProductBase product)
@@ -33,8 +43,8 @@ namespace e_commerce_domain.useCases
             {
                 throw new NullReferenceException($"El producto con id {idProduct} no existe");
             }
-            Console.WriteLine($"El producto digital {product.GetName()} ha sido eliminado del inventario");
             _productRepository.Remove(product);
+            NotifyProductDeleted(idProduct);
         }
 
         public override void UpdateStock(Guid idStock, int stock)
@@ -47,6 +57,22 @@ namespace e_commerce_domain.useCases
 
             product.SetStock(stock);
             Console.WriteLine($"El nuevo stock del producto digital {product.GetName()} es de {product.GetStock()}");
+        }
+
+
+        public override IEnumerable<ProductBase> GetAll()
+        {
+            return _productRepository;
+        }
+
+        public override ProductBase GetProductById(Guid id)
+        {
+            return _productRepository.FirstOrDefault(p => p.Id == id);
+        }
+
+        public override ProductBase GetProductByName(string name)
+        {
+            return _productRepository.FirstOrDefault(p => p.GetName().ToLowerInvariant() == name.ToLowerInvariant());
         }
     }
 }

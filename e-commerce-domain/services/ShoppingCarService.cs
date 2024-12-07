@@ -13,9 +13,9 @@ namespace e_commerce_domain.useCases
     public class ShoppingCarService : IShoppingCarService
     {
         private readonly ShoppingCar _shoppingCar;
-        private readonly IProductRepository _productRepository;
+        private readonly InventoryManager _productRepository;
 
-        public ShoppingCarService(IProductRepository productRepository, Customer customer)
+        public ShoppingCarService(InventoryManager productRepository, Customer customer)
         {
             _productRepository = productRepository;
 
