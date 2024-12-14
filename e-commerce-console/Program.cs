@@ -4,6 +4,7 @@ using e_commerce_domain.entities.User;
 using e_commerce_domain.enums;
 using e_commerce_domain.observer;
 using e_commerce_domain.observer.contracts;
+using e_commerce_domain.services.Contracts;
 using e_commerce_domain.services.PayFactory;
 using e_commerce_domain.useCases;
 

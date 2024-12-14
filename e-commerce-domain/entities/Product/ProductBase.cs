@@ -73,7 +73,7 @@
 
         public void SetGrossValue(decimal grossvalue)
         {
-            if (grossValue <= 0)
+            if (grossvalue <= 0)
             {
                 throw new ArgumentOutOfRangeException($"El valor base del producto no puede ser menor o igual a 0");
             }
@@ -87,7 +87,7 @@
 
         public void SetTaxPercentaje(decimal taxpercentaje)
         {
-            if (taxpercentaje < 0 || taxPercentaje > 100)
+            if (taxpercentaje < 0 || taxpercentaje > 100)
             {
                 throw new ArgumentOutOfRangeException($"El porcentaje del impuesto no puede ser menor a 0 ni mayor a 100");
             }

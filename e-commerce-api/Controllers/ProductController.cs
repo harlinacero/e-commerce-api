@@ -11,9 +11,12 @@ namespace e_commerce_api.Controllers
     [Route("[controller]")]
     public class ProductController : ControllerBase
     {
-
-        public ProductController()
+        private readonly IInventoryManager _physicalInventoryManager;
+        private readonly IInventoryManager _digitalInventoryManager;
+        public ProductController(IInventoryManager physicalInventoryManager, IInventoryManager digitalInventoryManager)
         {
+            _physicalInventoryManager = physicalInventoryManager;
+            _digitalInventoryManager = digitalInventoryManager;
         }
 
         /// <summary>
@@ -24,8 +27,10 @@ namespace e_commerce_api.Controllers
         public IEnumerable<ProductBase> GetAllProducts()
         {
             IEnumerable<ProductBase> products = new List<ProductBase>();
-            var physicalProducts = InventoryManagerFactory.CreateInventoryManagerFactory(ProductType.Physical).GetAll();
-            var digitalProducts = InventoryManagerFactory.CreateInventoryManagerFactory(ProductType.Digital).GetAll();
+            
+
+            var physicalProducts = _physicalInventoryManager.GetAll();
+            var digitalProducts = _digitalInventoryManager.GetAll();
 
             products = products.Concat(physicalProducts).Concat(digitalProducts);
 
@@ -40,7 +45,8 @@ namespace e_commerce_api.Controllers
         [HttpGet("{id}")]
         public ActionResult GetProductById(Guid id, ProductType productType)
         {
-            InventoryManager _productRepository = InventoryManagerFactory.CreateInventoryManagerFactory(productType);
+            IInventoryManager _productRepository = GetInventoryManager(productType);            
+
             var product = _productRepository.GetProductById(id);
             if (product != null)
             {
@@ -49,6 +55,7 @@ namespace e_commerce_api.Controllers
 
             return NotFound();
         }
+
 
         /// <summary>
         /// Crea un producto en base a las propiedades recibidas
@@ -61,7 +68,7 @@ namespace e_commerce_api.Controllers
             try
             {
                 var newproduct = ProductsFactory.CreateProduct(product.ProductType, product);
-                var repository = InventoryManagerFactory.CreateInventoryManagerFactory(product.ProductType);
+                var repository = GetInventoryManager(product.ProductType);
                 repository.AddProduct(newproduct);
                 return CreatedAtAction(nameof(GetProductById), new { id = newproduct.Id }, product);
             }
@@ -81,7 +88,7 @@ namespace e_commerce_api.Controllers
         [HttpPut("{id}")]
         public ActionResult UpdateProduct(Guid id, [FromBody] GenericProductDTO product, ProductType productType)
         {
-            var repository = InventoryManagerFactory.CreateInventoryManagerFactory(productType);
+            var repository = GetInventoryManager(product.ProductType);
             var existingProduct = repository.GetProductById(id);
             if (existingProduct == null)
             {
@@ -109,7 +116,7 @@ namespace e_commerce_api.Controllers
         [HttpDelete("{id}")]
         public ActionResult DeleteProduct(Guid id, ProductType productType)
         {
-            var repository = InventoryManagerFactory.CreateInventoryManagerFactory(productType);
+            var repository = GetInventoryManager(productType);
             var existingProduct = repository.GetProductById(id);
             if (existingProduct == null)
             {
@@ -118,6 +125,17 @@ namespace e_commerce_api.Controllers
 
             repository.DeleteProduct(id);
             return NoContent();
+        }
+
+
+        private IInventoryManager GetInventoryManager(ProductType productType)
+        {
+            return productType switch
+            {
+                ProductType.Physical => _physicalInventoryManager,
+                ProductType.Digital => _digitalInventoryManager,
+                _ => throw new NotSupportedException($"El tipo de producto {productType} no existe"),
+            };
         }
     }
 }

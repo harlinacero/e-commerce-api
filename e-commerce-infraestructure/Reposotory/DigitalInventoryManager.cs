@@ -1,4 +1,5 @@
 ﻿using e_commerce_domain.entities.Product;
+using e_commerce_domain.observer.contracts;
 using e_commerce_domain.repositories;
 
 namespace e_commerce_infraestructure.Reposotory
@@ -6,19 +7,29 @@ namespace e_commerce_infraestructure.Reposotory
     public class DigitalInventoryManager : InventoryManager
     {
         private readonly ICollection<DigitalProduct> _productRepository;
-        public static DigitalInventoryManager _instance;
-        private DigitalInventoryManager()
+        public DigitalInventoryManager(List<IInventoryObserver> observers) : base(observers)
         {
             _productRepository = new List<DigitalProduct>();
+            InitializeProducts();
         }
 
-        public static DigitalInventoryManager GetInstance()
+        private void InitializeProducts()
         {
-            if (_instance == null)
+            for (int i = 1; i <= 10; i++)
             {
-                _instance = new DigitalInventoryManager();
+                DigitalProduct product = new DigitalProduct(
+                    $"DigitalProduct{i}",
+                    $"Description for DigitalProduct{i}",
+                    50m + i, // grossValue
+                    5m, // discPercentaje
+                    10m, // taxPercentaje
+                    100, // stock
+                    $"Format{i}", // fileFormat
+                    1.5f * i // size
+                );
+                product.Id = Guid.NewGuid();
+                _productRepository.Add(product);
             }
-            return _instance;
         }
 
         public override void AddProduct(ProductBase product)
@@ -27,15 +38,6 @@ namespace e_commerce_infraestructure.Reposotory
             _productRepository.Add(digitalProduct);
             NotifyProductAdded(product);
         }
-
-        private DigitalProduct CreateProduct(ProductBase product)
-        {
-            DigitalProduct digitalProduct = new(product.GetName(), product.GetDescription(),
-                product.GetGrossValue(), product.GetDisccounPercentaje(), product.GetTaxPercentaje(), product.GetStock(), "", 0);
-            digitalProduct.Id = product.Id;
-            return digitalProduct;
-        }
-
         public override void DeleteProduct(Guid idProduct)
         {
             var product = _productRepository.FirstOrDefault(x => x.Id == idProduct);
@@ -46,6 +48,15 @@ namespace e_commerce_infraestructure.Reposotory
             _productRepository.Remove(product);
             NotifyProductDeleted(idProduct);
         }
+
+        private DigitalProduct CreateProduct(ProductBase product)
+        {
+            DigitalProduct digitalProduct = new(product.GetName(), product.GetDescription(),
+                product.GetGrossValue(), product.GetDisccounPercentaje(), product.GetTaxPercentaje(), product.GetStock(), "", 0);
+            digitalProduct.Id = product.Id;
+            return digitalProduct;
+        }
+
 
         public override void UpdateStock(Guid idStock, int stock)
         {

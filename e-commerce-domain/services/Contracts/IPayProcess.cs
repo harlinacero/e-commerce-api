@@ -1,4 +1,4 @@
-﻿namespace e_commerce_domain.services.PayFactory
+﻿namespace e_commerce_domain.services.Contracts
 {
     public interface IPayProcess
     {

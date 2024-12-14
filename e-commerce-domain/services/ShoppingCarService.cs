@@ -1,4 +1,5 @@
-﻿using e_commerce_domain.entities.Product;
+﻿using e_commerce_domain.customExceptions;
+using e_commerce_domain.entities.Product;
 using e_commerce_domain.entities.ShoppingCar;
 using e_commerce_domain.entities.User;
 using e_commerce_domain.repositories;
@@ -37,7 +38,7 @@ namespace e_commerce_domain.useCases
             var oproduct = _productRepository.GetProductById(product.Id);
             if (oproduct == null)
             {
-                throw new ArgumentNullException($"El producto {product.GetName} no existe en el inventario");
+                throw new InsufficientInventoryException($"El producto {product.GetName} no existe en el inventario");
             }
             _shoppingCar.Products.Add(oproduct);
         }
@@ -52,7 +53,7 @@ namespace e_commerce_domain.useCases
             var oproduct = _productRepository.GetProductById(idProduct);
             if (oproduct == null)
             {
-                throw new ArgumentNullException($"El producto con id {idProduct} no existe en el inventario");
+                throw new InsufficientInventoryException($"El producto con id {idProduct} no existe en el inventario");
             }
             _shoppingCar.Products.Add(oproduct);
 
@@ -68,7 +69,7 @@ namespace e_commerce_domain.useCases
             var oproduct = _productRepository.GetProductByName(name);
             if (oproduct == null)
             {
-                throw new ArgumentNullException($"El producto {name} no existe en el inventario");
+                throw new InsufficientInventoryException($"El producto {name} no existe en el inventario");
             }
             _shoppingCar.Products.Add(oproduct);
 
