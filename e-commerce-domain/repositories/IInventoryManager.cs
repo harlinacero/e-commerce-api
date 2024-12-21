@@ -1,17 +1,16 @@
-﻿using e_commerce_domain.entities.Product;
+﻿using e_commerce_domain.DTO;
+using e_commerce_domain.entities.Product;
 using e_commerce_domain.observer.contracts;
 
 namespace e_commerce_domain.repositories
 {
-    public interface IInventoryManager
+    public interface IInventoryManager : InventoryObserbable
     {
-        void AddObserver(IInventoryObserver observer);
-        void AddProduct(ProductBase product);
+        void AddProduct(GenericProductDTO product);
         void DeleteProduct(Guid idProduct);
-        IEnumerable<ProductBase> GetAll();
-        ProductBase GetProductById(Guid id);
-        ProductBase GetProductByName(string name);
-        void RemoveObserver(IInventoryObserver observer);
-        void UpdateStock(Guid idStock, int stock);
+        IEnumerable<GenericProductDTO> GetAll();
+        GenericProductDTO GetProductById(Guid id);
+        GenericProductDTO GetProductByName(string name);
+        
     }
 }

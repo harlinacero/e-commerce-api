@@ -1,12 +1,10 @@
-﻿using e_commerce_domain.entities.Order;
+﻿using e_commerce_domain.DTO;
+using e_commerce_domain.entities.Order;
 using e_commerce_domain.entities.Product;
 using e_commerce_domain.entities.User;
 using e_commerce_domain.enums;
-using e_commerce_domain.observer;
-using e_commerce_domain.observer.contracts;
 using e_commerce_domain.services.Contracts;
 using e_commerce_domain.services.PayFactory;
-using e_commerce_domain.useCases;
 
 internal class Program
 {
@@ -122,14 +120,37 @@ internal class Program
 
         for (int i = 0; i <= totalDigitalProducts; i++)
         {
-            var product = new DigitalProduct("libro.pdf", "Libro digital", 300, 20, 10, 10, "PDF", 200);
+            var product = new DigitalProduct(new GenericProductDTO()
+            {
+                Name = $"libro{i}.pdf",
+                Description = "Libro digital",
+                GrossValue = 300,
+                DiscPercentaje = 20,
+                TaxPercentaje = 10,
+                Stock = 10,
+                FileFormat = "PDF",
+                Size = 200
+            });
             order.Products.Add(product);
             order.Total += product.CalculateTotalValue();
         }
 
         for (int i = 0; i <= totalPhysicalProducts; i++)
         {
-            var product = new PhysicalProduct("libro", "Libro pasta dura", 300, 20, 10, 10, 150, 20, 35, 3, 50);
+            var product = new PhysicalProduct(new GenericProductDTO()
+            {
+                Name = $"libro{i}",
+                Description = "Libro pasta dura",
+                GrossValue = 300,
+                DiscPercentaje = 20,
+                TaxPercentaje = 10,
+                Stock = 10,
+                Height = 20,
+                Width = 35,
+                Length = 3,
+                Weight = 50,
+                BaseShippingCost = 150
+            });
             order.Products.Add(product);
             order.Total += product.CalculateTotalValue();
         }

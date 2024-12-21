@@ -1,5 +1,6 @@
 ﻿using e_commerce_domain.entities.Product;
 using e_commerce_domain.entities.User;
+using e_commerce_domain.enums;
 
 namespace e_commerce_domain.entities.Order
 {
@@ -24,6 +25,10 @@ namespace e_commerce_domain.entities.Order
         /// Estado de la orden Pendiente, En camino, Entregado
         /// </summary>
         public string State { get; set; }
+        /// <summary>
+        /// Método de pago de la orden
+        /// </summary>
+        public MethodPay MethodPay { get; set; }
         /// <summary>
         /// Valor total de la orden
         /// </summary>

@@ -17,27 +17,8 @@ namespace e_commerce_infraestructure.ProductsFactory
         {
             return productType switch
             {
-                ProductType.Digital => new DigitalProduct(
-                                        product.Name,
-                                        product.Description,
-                                        product.GrossValue,
-                                        product.DiscPercentaje,
-                                        product.TaxPercentaje,
-                                        product.Stock,
-                                        product.FileFormat,
-                                        product.Size),
-                ProductType.Physical => new PhysicalProduct(
-                                        product.Name,
-                                        product.Description,
-                                        product.GrossValue,
-                                        product.DiscPercentaje,
-                                        product.TaxPercentaje,
-                                        product.Stock,
-                                        product.Weight,
-                                        product.Height,
-                                        product.Width,
-                                        product.Length,
-                                        product.BaseShippingCost),
+                ProductType.Digital => new DigitalProduct(product),
+                ProductType.Physical => new PhysicalProduct(product),
                 _ => throw new NotSupportedException($"El tipo de producto {productType} no es soportado."),
             };
         }

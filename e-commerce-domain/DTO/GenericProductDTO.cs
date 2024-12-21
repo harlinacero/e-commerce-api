@@ -20,4 +20,5 @@ namespace e_commerce_domain.DTO
         public decimal Length { get; set; }
         public decimal BaseShippingCost { get; set; }
     }
+
 }

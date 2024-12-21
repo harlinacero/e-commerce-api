@@ -1,8 +1,9 @@
 ﻿using e_commerce_domain.DTO;
 using e_commerce_domain.entities.Product;
 using e_commerce_domain.observer.contracts;
+using e_commerce_domain.repositories;
 
-namespace e_commerce_domain.repositories
+namespace e_commerce_infraestructure.Reposotory
 {
     /// <summary>
     /// Inventario de productos
@@ -11,7 +12,6 @@ namespace e_commerce_domain.repositories
     {
         protected readonly List<IInventoryObserver> _observers;
 
-        protected InventoryManager() { }
         protected InventoryManager(List<IInventoryObserver> observers)
         {
             _observers = observers;
@@ -51,7 +51,7 @@ namespace e_commerce_domain.repositories
             }
         }
 
-        public abstract void AddProduct(ProductBase product);
+        public abstract void AddProduct(GenericProductDTO product);
         public abstract void DeleteProduct(Guid idProduct);
         public abstract void UpdateStock(Guid idStock, int stock);
         /// <summary>
@@ -59,17 +59,17 @@ namespace e_commerce_domain.repositories
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public abstract ProductBase GetProductById(Guid id);
+        public abstract GenericProductDTO GetProductById(Guid id);
         /// <summary>
         /// Obtiene un producto del repositorio por su 
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public abstract ProductBase GetProductByName(string name);
+        public abstract GenericProductDTO GetProductByName(string name);
         /// <summary>
         /// Obtiene todos los productos del repositorio
         /// </summary>
         /// <returns></returns>
-        public abstract IEnumerable<ProductBase> GetAll();
+        public abstract IEnumerable<GenericProductDTO> GetAll();
     }
 }

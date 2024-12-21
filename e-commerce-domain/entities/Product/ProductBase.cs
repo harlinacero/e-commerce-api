@@ -1,4 +1,6 @@
-﻿namespace e_commerce_domain.entities.Product
+﻿using e_commerce_domain.DTO;
+
+namespace e_commerce_domain.entities.Product
 {
     /// <summary>
     /// Producto base
@@ -30,101 +32,39 @@
         /// </summary>
         protected int stock;
 
-        public ProductBase(string name, string description, decimal grossValue, decimal discPercentaje, decimal taxPercentaje, int stock)
+        public ProductBase(GenericProductDTO productDTO)
         {
-            this.name = name;
-            this.description = description;
-            this.grossValue = grossValue;
-            this.discPercentaje = discPercentaje;
-            this.taxPercentaje = taxPercentaje;
-            this.stock = stock;
+            this.name = productDTO.Name;
+            this.description = productDTO.Description;
+            this.grossValue = productDTO.GrossValue;
+            this.discPercentaje = productDTO.DiscPercentaje;
+            this.taxPercentaje = productDTO.TaxPercentaje;
+            this.stock = productDTO.Stock;
         }
 
+        public abstract string GetName();
 
-        public string GetName()
-        {
-            return name;
-        }
+        public abstract void SetName(string name);
 
-        public void SetName(string name)
-        {
-            if (name.Trim().Length <= 5 || name.Length > 20)
-            {
-                throw new ArgumentOutOfRangeException($"El nombre del producto {name} no puede ser menor a 5 caracteres ni mayor a 20 caracteres");
-            }
+        public abstract string GetDescription();
 
-            this.name = name;
-        }
+        public abstract void SetDescription(string description);
 
-        public string GetDescription()
-        {
-            return description;
-        }
+        public abstract decimal GetGrossValue();
 
-        public void SetDescription(string description)
-        {
-            this.description = description;
-        }
+        public abstract void SetGrossValue(decimal grossvalue);
 
-        public decimal GetGrossValue()
-        {
-            return grossValue;
-        }
+        public abstract decimal GetTaxPercentaje();
 
-        public void SetGrossValue(decimal grossvalue)
-        {
-            if (grossvalue <= 0)
-            {
-                throw new ArgumentOutOfRangeException($"El valor base del producto no puede ser menor o igual a 0");
-            }
-            grossValue = grossvalue;
-        }
+        public abstract void SetTaxPercentaje(decimal taxpercentaje);
 
-        public decimal GetTaxPercentaje()
-        {
-            return taxPercentaje;
-        }
+        public abstract decimal GetDisccounPercentaje();
 
-        public void SetTaxPercentaje(decimal taxpercentaje)
-        {
-            if (taxpercentaje < 0 || taxpercentaje > 100)
-            {
-                throw new ArgumentOutOfRangeException($"El porcentaje del impuesto no puede ser menor a 0 ni mayor a 100");
-            }
+        public abstract void SetDisccountPercentaje(decimal disccountPercentaje);
 
-            taxPercentaje = taxpercentaje;
-        }
+        public abstract int GetStock();
 
-        public decimal GetDisccounPercentaje()
-        {
-            return discPercentaje;
-        }
-
-        public void SetDisccountPercentaje(decimal disccountPercentaje)
-        {
-            if (disccountPercentaje < 0 || disccountPercentaje > 100)
-            {
-                throw new ArgumentOutOfRangeException($"El porcentaje del descuento no puede ser menor a 0 ni mayor a 100");
-            }
-
-            discPercentaje = disccountPercentaje;
-        }
-
-        public int GetStock()
-        {
-            return stock;
-        }
-
-        public void SetStock(int stock)
-        {
-            if (stock < 0)
-            {
-                throw new ArgumentOutOfRangeException($"El stock del producto no puede ser menor a 0");
-            }
-            this.stock = stock;
-        }
-
-
+        public abstract void SetStock(int stock);
 
         /// <summary>
         /// Calcula el valor total del producto teniendo en cuenta elementos propios de la implementación

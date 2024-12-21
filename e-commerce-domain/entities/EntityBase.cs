@@ -3,7 +3,7 @@
     /// <summary>
     /// Base de todas las entidades
     /// </summary>
-    public class EntityBase
+    public abstract class EntityBase
     {
         public Guid Id { get; set; }
     }

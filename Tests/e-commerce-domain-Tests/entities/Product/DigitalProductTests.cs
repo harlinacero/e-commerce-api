@@ -1,4 +1,5 @@
-﻿using e_commerce_domain.entities.Product;
+﻿using e_commerce_domain.DTO;
+using e_commerce_domain.entities.Product;
 
 namespace e_commerce_domain_Tests.entities.Product
 {
@@ -18,7 +19,18 @@ namespace e_commerce_domain_Tests.entities.Product
             float size = 2.5f;
 
             // Act
-            DigitalProduct product = new(name, description, grossValue, discPercentaje, taxPercentaje, stock, fileFormat, size);
+            var dto = new GenericProductDTO()
+            {
+                Name = name,
+                Description = description,
+                GrossValue = grossValue,
+                DiscPercentaje = discPercentaje,
+                TaxPercentaje = taxPercentaje,
+                Stock = stock,
+                FileFormat = fileFormat,
+                Size = size
+            };
+            DigitalProduct product = new(dto);
 
             // Assert
             Assert.Equal(name, product.GetName());
@@ -35,7 +47,16 @@ namespace e_commerce_domain_Tests.entities.Product
         public void SetFileFormat_ShouldThrowArgumentNullException_WhenFileFormatIsNullOrEmpty()
         {
             // Arrange
-            DigitalProduct product = new("Libro Digital", "Un libro en formato digital", 100, 10, 5, 50, "pdf", 2.5f);
+            var dto = new GenericProductDTO()
+            {
+                Name = "Producto de Prueba",
+                Description = "Descripción",
+                GrossValue = 100,
+                DiscPercentaje = 10,
+                TaxPercentaje = 5,
+                Stock = 50
+            };
+            DigitalProduct product = new(dto);
 
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => product.SetFileFormtat(null));
@@ -46,7 +67,18 @@ namespace e_commerce_domain_Tests.entities.Product
         public void SetFileFormat_ShouldThrowInvalidDataException_WhenFileFormatIsInvalid()
         {
             // Arrange
-            DigitalProduct product = new("Libro Digital", "Un libro en formato digital", 100, 10, 5, 50, "pdf", 2.5f);
+            var dto = new GenericProductDTO()
+            {
+                Name = "Producto de Prueba",
+                Description = "Descripción",
+                GrossValue = 100,
+                DiscPercentaje = 10,
+                TaxPercentaje = 5,
+                Stock = 50,
+                FileFormat = "pdf",
+                Size = 2.5f
+            };
+            DigitalProduct product = new(dto);
 
             // Act & Assert
             Assert.Throws<InvalidDataException>(() => product.SetFileFormtat("invalidFormat"));
@@ -56,7 +88,18 @@ namespace e_commerce_domain_Tests.entities.Product
         public void SetFileFormat_ShouldUpdateFileFormat_WhenFileFormatIsValid()
         {
             // Arrange
-            DigitalProduct product = new("Libro Digital", "Un libro en formato digital", 100, 10, 5, 50, "pdf", 2.5f);
+            var dto = new GenericProductDTO()
+            {
+                Name = "Producto de Prueba",
+                Description = "Descripción",
+                GrossValue = 100,
+                DiscPercentaje = 10,
+                TaxPercentaje = 5,
+                Stock = 50,
+                FileFormat = "pdf",
+                Size = 2.5f
+            };
+            DigitalProduct product = new(dto);
             string newFileFormat = "epub";
 
             // Act
@@ -70,7 +113,18 @@ namespace e_commerce_domain_Tests.entities.Product
         public void SetSize_ShouldThrowArgumentOutOfRangeException_WhenSizeIsLessThanOrEqualToZero()
         {
             // Arrange
-            DigitalProduct product = new("Libro Digital", "Un libro en formato digital", 100, 10, 5, 50, "pdf", 2.5f);
+            var dto = new GenericProductDTO()
+            {
+                Name = "Producto de Prueba",
+                Description = "Descripción",
+                GrossValue = 100,
+                DiscPercentaje = 10,
+                TaxPercentaje = 5,
+                Stock = 50,
+                FileFormat = "pdf",
+                Size = 2.5f
+            };
+            DigitalProduct product = new(dto);
 
             // Act & Assert
             Assert.Throws<ArgumentOutOfRangeException>(() => product.SetSize(0));
@@ -81,7 +135,18 @@ namespace e_commerce_domain_Tests.entities.Product
         public void SetSize_ShouldUpdateSize_WhenSizeIsGreaterThanZero()
         {
             // Arrange
-            DigitalProduct product = new("Libro Digital", "Un libro en formato digital", 100, 10, 5, 50, "pdf", 2.5f);
+            var dto = new GenericProductDTO()
+            {
+                Name = "Producto de Prueba",
+                Description = "Descripción",
+                GrossValue = 100,
+                DiscPercentaje = 10,
+                TaxPercentaje = 5,
+                Stock = 50,
+                FileFormat = "pdf",
+                Size = 2.5f
+            };
+            DigitalProduct product = new(dto);
             float newSize = 5.0f;
 
             // Act
@@ -95,7 +160,18 @@ namespace e_commerce_domain_Tests.entities.Product
         public void CalculateTotalValue_ShouldReturnCorrectValue()
         {
             // Arrange
-            DigitalProduct product = new("Libro Digital", "Un libro en formato digital", 100, 10, 5, 50, "pdf", 2.5f);
+            var dto = new GenericProductDTO()
+            {
+                Name = "Producto de Prueba",
+                Description = "Descripción",
+                GrossValue = 100,
+                DiscPercentaje = 10,
+                TaxPercentaje = 5,
+                Stock = 50,
+                FileFormat = "pdf",
+                Size = 2.5f
+            };
+            DigitalProduct product = new(dto);
 
             // Act
             decimal totalValue = product.CalculateTotalValue();
@@ -108,13 +184,24 @@ namespace e_commerce_domain_Tests.entities.Product
         public void ShowInfo_ShouldReturnCorrectInfo()
         {
             // Arrange
-            DigitalProduct product = new("Libro Digital", "Un libro en formato digital", 100, 10, 5, 50, "pdf", 2.5f);
+            var dto = new GenericProductDTO()
+            {
+                Name = "Producto de Prueba",
+                Description = "Descripción",
+                GrossValue = 100,
+                DiscPercentaje = 10,
+                TaxPercentaje = 5,
+                Stock = 50,
+                FileFormat = "pdf",
+                Size = 2.5f
+            };
+            DigitalProduct product = new(dto);
 
             // Act
             string info = product.ShowInfo();
 
             // Assert
-            Assert.Contains("Libro Digital", info);
+            Assert.Contains("Producto de Prueba", info);
             Assert.Contains("2,5MB", info);
             Assert.Contains("pdf", info);
             Assert.Contains("95", info);

@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>e_commerce_application</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\e-commerce-domain\e-commerce-domain.csproj" />
+    <ProjectReference Include="..\e-commerce-infraestructure\e-commerce-infraestructure.csproj" />
+  </ItemGroup>
+
+</Project>

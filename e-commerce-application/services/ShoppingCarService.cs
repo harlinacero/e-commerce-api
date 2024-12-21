@@ -4,25 +4,23 @@ using e_commerce_domain.entities.ShoppingCar;
 using e_commerce_domain.entities.User;
 using e_commerce_domain.repositories;
 using e_commerce_domain.services.Contracts;
+using e_commerce_infraestructure.ProductsFactory;
 using System.Text;
 
-namespace e_commerce_domain.useCases
+namespace e_commerce_application.services
 {
-    /// <summary>
-    /// Administra el carrito de compras de un usuario
-    /// </summary>
     public class ShoppingCarService : IShoppingCarService
     {
         private readonly ShoppingCar _shoppingCar;
-        private readonly InventoryManager _productRepository;
+        private readonly IInventoryManager _productRepository;
 
-        public ShoppingCarService(InventoryManager productRepository, Customer customer)
+        public ShoppingCarService(IInventoryManager productRepository)
         {
             _productRepository = productRepository;
 
             _shoppingCar = new ShoppingCar()
             {
-                Customer = customer,
+                Customer = new Customer("harlin", "harlina@mail.com", "1234567", "harlin", "acero", "bogota"),
                 Products = new List<ProductBase>()
             };
 
@@ -38,9 +36,10 @@ namespace e_commerce_domain.useCases
             var oproduct = _productRepository.GetProductById(product.Id);
             if (oproduct == null)
             {
-                throw new InsufficientInventoryException($"El producto {product.GetName} no existe en el inventario");
+                throw new InsufficientInventoryException($"El producto {product.GetName()} no existe en el inventario");
             }
-            _shoppingCar.Products.Add(oproduct);
+
+            _shoppingCar.Products.Add(product);
         }
 
         /// <summary>
@@ -55,7 +54,8 @@ namespace e_commerce_domain.useCases
             {
                 throw new InsufficientInventoryException($"El producto con id {idProduct} no existe en el inventario");
             }
-            _shoppingCar.Products.Add(oproduct);
+            var product = ProductsFactory.CreateProduct(oproduct.ProductType, oproduct);
+            _shoppingCar.Products.Add(product);
 
         }
 
@@ -71,7 +71,8 @@ namespace e_commerce_domain.useCases
             {
                 throw new InsufficientInventoryException($"El producto {name} no existe en el inventario");
             }
-            _shoppingCar.Products.Add(oproduct);
+            var product = ProductsFactory.CreateProduct(oproduct.ProductType, oproduct);
+            _shoppingCar.Products.Add(product);
 
         }
 

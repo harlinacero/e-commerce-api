@@ -17,8 +17,6 @@
         /// Dirección
         /// </summary>
         private string address;
-
-
         /// <summary>
         /// Teléfono
         /// </summary>
@@ -27,6 +25,7 @@
         public Customer(string username, string email, string password, string firstname, string lastname, string address)
             : base(username, email, password)
         {
+            this.Id = Guid.NewGuid();
             this.firstName = firstname;
             this.lastName = lastname;
             this.address = address;

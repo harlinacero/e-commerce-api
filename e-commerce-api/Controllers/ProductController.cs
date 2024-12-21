@@ -1,8 +1,11 @@
 ﻿using e_commerce_domain.DTO;
 using e_commerce_domain.entities.Product;
 using e_commerce_domain.enums;
+using e_commerce_domain.observer;
+using e_commerce_domain.observer.contracts;
 using e_commerce_domain.repositories;
 using e_commerce_infraestructure.ProductsFactory;
+using e_commerce_infraestructure.Reposotory;
 using Microsoft.AspNetCore.Mvc;
 
 namespace e_commerce_api.Controllers
@@ -13,10 +16,11 @@ namespace e_commerce_api.Controllers
     {
         private readonly IInventoryManager _physicalInventoryManager;
         private readonly IInventoryManager _digitalInventoryManager;
-        public ProductController(IInventoryManager physicalInventoryManager, IInventoryManager digitalInventoryManager)
+        public ProductController()
         {
-            _physicalInventoryManager = physicalInventoryManager;
-            _digitalInventoryManager = digitalInventoryManager;
+            var observers = new List<IInventoryObserver>();
+            _physicalInventoryManager = new PhysicalInventoryManager(observers);
+            _digitalInventoryManager = new DigitalInventoryManager(observers);
         }
 
         /// <summary>
@@ -24,17 +28,18 @@ namespace e_commerce_api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IEnumerable<ProductBase> GetAllProducts()
+        public ActionResult GetAllProducts()
         {
-            IEnumerable<ProductBase> products = new List<ProductBase>();
-            
+            List<GenericProductDTO> productsDTO = new List<GenericProductDTO>();
+
 
             var physicalProducts = _physicalInventoryManager.GetAll();
             var digitalProducts = _digitalInventoryManager.GetAll();
 
-            products = products.Concat(physicalProducts).Concat(digitalProducts);
+            productsDTO.AddRange(physicalProducts);
+            productsDTO.AddRange(digitalProducts);
 
-            return products;
+            return Ok(productsDTO);
         }
 
         /// <summary>
@@ -45,7 +50,7 @@ namespace e_commerce_api.Controllers
         [HttpGet("{id}")]
         public ActionResult GetProductById(Guid id, ProductType productType)
         {
-            IInventoryManager _productRepository = GetInventoryManager(productType);            
+            IInventoryManager _productRepository = GetInventoryManager(productType);
 
             var product = _productRepository.GetProductById(id);
             if (product != null)
@@ -69,7 +74,7 @@ namespace e_commerce_api.Controllers
             {
                 var newproduct = ProductsFactory.CreateProduct(product.ProductType, product);
                 var repository = GetInventoryManager(product.ProductType);
-                repository.AddProduct(newproduct);
+                repository.AddProduct(product);
                 return CreatedAtAction(nameof(GetProductById), new { id = newproduct.Id }, product);
             }
             catch (Exception ex)
@@ -99,7 +104,7 @@ namespace e_commerce_api.Controllers
             {
                 var updatedProduct = ProductsFactory.CreateProduct(productType, product);
                 repository.DeleteProduct(id);
-                repository.AddProduct(updatedProduct);
+                repository.AddProduct(product);
                 return Ok(updatedProduct);
             }
             catch (Exception ex)

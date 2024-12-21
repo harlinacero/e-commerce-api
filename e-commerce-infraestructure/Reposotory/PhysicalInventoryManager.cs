@@ -1,8 +1,9 @@
 ﻿using e_commerce_domain.entities.Product;
 using e_commerce_domain.observer.contracts;
-using e_commerce_domain.repositories;
 using System.Collections.Generic;
 using System;
+using e_commerce_domain.DTO;
+using e_commerce_domain.enums;
 
 namespace e_commerce_infraestructure.Reposotory
 {
@@ -11,42 +12,58 @@ namespace e_commerce_infraestructure.Reposotory
     /// </summary>
     public class PhysicalInventoryManager : InventoryManager
     {
-        private readonly ICollection<PhysicalProduct> _productRepository;
-        public PhysicalInventoryManager(List<IInventoryObserver> observers): base(observers)
+        private readonly ICollection<PhysicalProduct> _productRepository = new List<PhysicalProduct>();
+        public PhysicalInventoryManager(List<IInventoryObserver> observers) : base(observers)
         {
-            _productRepository = new List<PhysicalProduct>();
+            _productRepository = InitializeProducts();
             InitializeProducts();
         }
 
-        private void InitializeProducts()
+        private List<PhysicalProduct> InitializeProducts()
         {
-            for (int i = 1; i <= 10; i++)
+
+            PhysicalProduct product1 = new(new GenericProductDTO()
             {
-                PhysicalProduct product = new(
-                    $"Product{i}",
-                    $"Description for Product{i}",
-                    100m + i, // grossValue
-                    10m, // discPercentaje
-                    15m, // taxPercentaje
-                    50, // stock
-                    1m * i, // weight
-                    2m * i, // height
-                    3m * i, // width
-                    4m * i, // length
-                    5m * i // baseShippingCost
-                )
-                {
-                    Id = Guid.NewGuid()
-                };
-                _productRepository.Add(product);
-            }
+                Name = $"Carro de Jugete",
+                Description = $"Descripción carro",
+                GrossValue = 1000,
+                DiscPercentaje = (decimal)(0.1),
+                TaxPercentaje = (decimal)(0.19),
+                Stock = 10,
+                Height = 30,
+                Width = 40,
+                Weight = 250,
+                ProductType = ProductType.Physical
+            });
+
+            PhysicalProduct product2 = new(new GenericProductDTO()
+            {
+                Name = $"Camara fotográfica",
+                Description = $"Descripción cámara fotografica",
+                GrossValue = 1300,
+                DiscPercentaje = (decimal)(0.1),
+                TaxPercentaje = (decimal)(0.19),
+                Stock = 10,
+                Height = 20,
+                Width = 140,
+                Weight = 250,
+                ProductType = ProductType.Physical
+            });
+            product1.Id = new Guid("36b70aab-ab6b-4327-a4b4-9e2803d416e7");
+            product2.Id = new Guid("2d010636-9c42-495e-8597-993f3f5d0efe");
+
+            _productRepository.Add(product1);
+            _productRepository.Add(product2);
+
+            return _productRepository.ToList();
         }
 
-        public override void AddProduct(ProductBase product)
+        public override void AddProduct(GenericProductDTO product)
         {
             PhysicalProduct physicalproduct = CreateProduct(product);
+
             _productRepository.Add(physicalproduct);
-            NotifyProductAdded(product);
+            NotifyProductAdded(physicalproduct);
         }
 
         public override void DeleteProduct(Guid idProduct)
@@ -62,11 +79,9 @@ namespace e_commerce_infraestructure.Reposotory
             NotifyProductDeleted(idProduct);
         }
 
-        private PhysicalProduct CreateProduct(ProductBase product)
+        private PhysicalProduct CreateProduct(GenericProductDTO product)
         {
-            PhysicalProduct physicalproduct = new(product.GetName(), product.GetDescription(),
-                product.GetGrossValue(), product.GetDisccounPercentaje(), product.GetTaxPercentaje(), product.GetStock(),
-                30, 40, 10, 250, 10);
+            PhysicalProduct physicalproduct = new(product);
             physicalproduct.Id = product.Id;
             return physicalproduct;
         }
@@ -83,19 +98,79 @@ namespace e_commerce_infraestructure.Reposotory
             Console.WriteLine($"El stock del producto físico {product.GetName()} es {product.GetStock()}");
         }
 
-        public override IEnumerable<ProductBase> GetAll()
+        public override IEnumerable<GenericProductDTO> GetAll()
         {
-            return _productRepository;
+            List<GenericProductDTO> products = new();
+            foreach (var product in _productRepository)
+            {
+                products.Add(new GenericProductDTO()
+                {
+                    Id = product.Id,
+                    Name = product.GetName(),
+                    Description = product.GetDescription(),
+                    GrossValue = product.GetGrossValue(),
+                    DiscPercentaje = product.GetDisccounPercentaje(),
+                    TaxPercentaje = product.GetTaxPercentaje(),
+                    Stock = product.GetStock(),
+                    Height = product.GetHeight(),
+                    Width = product.GetWidth(),
+                    Weight = product.GetWeight(),
+                    Length = product.GetLenght(),
+                    ProductType = ProductType.Physical
+                });
+            }
+
+            return products;
         }
 
-        public override ProductBase GetProductById(Guid id)
+        public override GenericProductDTO GetProductById(Guid id)
         {
-            return _productRepository.FirstOrDefault(p => p.Id == id);
+            var product = _productRepository.FirstOrDefault(p => p.Id == id);
+            if (product == null)
+            {
+                throw new NullReferenceException($"El producto con id {id} no existe");
+            }
+
+            return new GenericProductDTO()
+            {
+                Id = product.Id,
+                Name = product.GetName(),
+                Description = product.GetDescription(),
+                GrossValue = product.GetGrossValue(),
+                DiscPercentaje = product.GetDisccounPercentaje(),
+                TaxPercentaje = product.GetTaxPercentaje(),
+                Stock = product.GetStock(),
+                Height = product.GetHeight(),
+                Width = product.GetWidth(),
+                Weight = product.GetWeight(),
+                Length = product.GetLenght(),
+                ProductType = ProductType.Physical
+            };
         }
 
-        public override ProductBase GetProductByName(string name)
+        public override GenericProductDTO GetProductByName(string name)
         {
-            return _productRepository.FirstOrDefault(p => p.GetName().ToLowerInvariant() == name.ToLowerInvariant());
+            var product = _productRepository.FirstOrDefault(p => p.GetName().ToLowerInvariant() == name.ToLowerInvariant());
+            if (product == null)
+            {
+                throw new NullReferenceException($"El producto con nombre {name} no existe");
+            }
+
+            return new GenericProductDTO()
+            {
+                Id = product.Id,
+                Name = product.GetName(),
+                Description = product.GetDescription(),
+                GrossValue = product.GetGrossValue(),
+                DiscPercentaje = product.GetDisccounPercentaje(),
+                TaxPercentaje = product.GetTaxPercentaje(),
+                Stock = product.GetStock(),
+                Height = product.GetHeight(),
+                Width = product.GetWidth(),
+                Weight = product.GetWeight(),
+                Length = product.GetLenght(),
+                ProductType = ProductType.Physical
+            };
         }
     }
 }

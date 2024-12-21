@@ -1,4 +1,5 @@
-﻿using e_commerce_domain.entities.Product;
+﻿using e_commerce_domain.DTO;
+using e_commerce_domain.entities.Product;
 
 namespace e_commerce_domain.services.Contracts
 {

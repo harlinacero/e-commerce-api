@@ -1,26 +1,9 @@
-﻿using e_commerce_domain.entities.Product;
+﻿using e_commerce_domain.DTO;
 
 namespace e_commerce_domain_Tests.entities.Product
 {
-    public class ProductBaseTests
+    public partial class ProductBaseTests
     {
-        private class TestProduct : ProductBase
-        {
-            public TestProduct(string name, string description, decimal grossValue, decimal discPercentaje, decimal taxPercentaje, int stock)
-                : base(name, description, grossValue, discPercentaje, taxPercentaje, stock)
-            {
-            }
-
-            public override decimal CalculateTotalValue()
-            {
-                return GetGrossValue() + (GetGrossValue() * GetTaxPercentaje() / 100) - (GetGrossValue() * GetDisccounPercentaje() / 100);
-            }
-
-            public override string ShowInfo()
-            {
-                return $"Producto: {GetName()}, Descripción: {GetDescription()}, Precio: {CalculateTotalValue()}";
-            }
-        }
 
         [Fact]
         public void Constructor_ShouldInitializeProperties()
@@ -34,7 +17,15 @@ namespace e_commerce_domain_Tests.entities.Product
             int stock = 50;
 
             // Act
-            TestProduct product = new(name, description, grossValue, discPercentaje, taxPercentaje, stock);
+            TestProduct product = new(new GenericProductDTO()
+            {
+                Name = name,
+                Description = description,
+                GrossValue = grossValue,
+                DiscPercentaje = discPercentaje,
+                TaxPercentaje = taxPercentaje,
+                Stock = stock
+            });
 
             // Assert
             Assert.Equal(name, product.GetName());
@@ -49,7 +40,15 @@ namespace e_commerce_domain_Tests.entities.Product
         public void SetName_ShouldThrowArgumentOutOfRangeException_WhenNameIsInvalid()
         {
             // Arrange
-            TestProduct product = new("Producto de Prueba", "Descripción", 100, 10, 5, 50);
+            TestProduct product = new(new GenericProductDTO()
+            {
+                Name = "Producto de Prueba",
+                Description = "Descripción",
+                GrossValue = 100,
+                DiscPercentaje = 10,
+                TaxPercentaje = 5,
+                Stock = 50
+            });
 
             // Act & Assert
             Assert.Throws<ArgumentOutOfRangeException>(() => product.SetName("abc"));
@@ -60,7 +59,15 @@ namespace e_commerce_domain_Tests.entities.Product
         public void SetName_ShouldUpdateName_WhenNameIsValid()
         {
             // Arrange
-            TestProduct product = new("Producto de Prueba", "Descripción", 100, 10, 5, 50);
+            TestProduct product = new(new GenericProductDTO()
+            {
+                Name = "Producto de Prueba",
+                Description = "Descripción",
+                GrossValue = 100,
+                DiscPercentaje = 10,
+                TaxPercentaje = 5,
+                Stock = 50
+            });
             string newName = "Nuevo Nombre";
 
             // Act
@@ -74,7 +81,15 @@ namespace e_commerce_domain_Tests.entities.Product
         public void SetGrossValue_ShouldThrowArgumentOutOfRangeException_WhenGrossValueIsLessThanOrEqualToZero()
         {
             // Arrange
-            TestProduct product = new("Producto de Prueba", "Descripción", 100, 10, 5, 50);
+            TestProduct product = new(new GenericProductDTO()
+            {
+                Name = "Producto de Prueba",
+                Description = "Descripción",
+                GrossValue = 100,
+                DiscPercentaje = 10,
+                TaxPercentaje = 5,
+                Stock = 50
+            });
 
             // Act & Assert
             Assert.Throws<ArgumentOutOfRangeException>(() => product.SetGrossValue(0));
@@ -85,7 +100,15 @@ namespace e_commerce_domain_Tests.entities.Product
         public void SetGrossValue_ShouldUpdateGrossValue_WhenGrossValueIsGreaterThanZero()
         {
             // Arrange
-            TestProduct product = new("Producto de Prueba", "Descripción", 100, 10, 5, 50);
+            TestProduct product = new(new GenericProductDTO()
+            {
+                Name = "Producto de Prueba",
+                Description = "Descripción",
+                GrossValue = 100,
+                DiscPercentaje = 10,
+                TaxPercentaje = 5,
+                Stock = 50
+            });
             decimal newGrossValue = 200;
 
             // Act
@@ -99,7 +122,15 @@ namespace e_commerce_domain_Tests.entities.Product
         public void SetTaxPercentaje_ShouldThrowArgumentOutOfRangeException_WhenTaxPercentajeIsInvalid()
         {
             // Arrange
-            TestProduct product = new("Producto de Prueba", "Descripción", 100, 10, 5, 50);
+            TestProduct product = new(new GenericProductDTO()
+            {
+                Name = "Producto de Prueba",
+                Description = "Descripción",
+                GrossValue = 100,
+                DiscPercentaje = 10,
+                TaxPercentaje = 5,
+                Stock = 50
+            });
 
             // Act & Assert
             Assert.Throws<ArgumentOutOfRangeException>(() => product.SetTaxPercentaje(-1));
@@ -110,7 +141,15 @@ namespace e_commerce_domain_Tests.entities.Product
         public void SetTaxPercentaje_ShouldUpdateTaxPercentaje_WhenTaxPercentajeIsValid()
         {
             // Arrange
-            TestProduct product = new("Producto de Prueba", "Descripción", 100, 10, 5, 50);
+            TestProduct product = new(new GenericProductDTO()
+            {
+                Name = "Producto de Prueba",
+                Description = "Descripción",
+                GrossValue = 100,
+                DiscPercentaje = 10,
+                TaxPercentaje = 5,
+                Stock = 50
+            });
             decimal newTaxPercentaje = 15;
 
             // Act
@@ -124,8 +163,15 @@ namespace e_commerce_domain_Tests.entities.Product
         public void SetDisccountPercentaje_ShouldThrowArgumentOutOfRangeException_WhenDisccountPercentajeIsInvalid()
         {
             // Arrange
-            TestProduct product = new("Producto de Prueba", "Descripción", 100, 10, 5, 50);
-
+            TestProduct product = new(new GenericProductDTO()
+            {
+                Name = "Producto de Prueba",
+                Description = "Descripción",
+                GrossValue = 100,
+                DiscPercentaje = 10,
+                TaxPercentaje = 5,
+                Stock = 50
+            });
             // Act & Assert
             Assert.Throws<ArgumentOutOfRangeException>(() => product.SetDisccountPercentaje(-1));
             Assert.Throws<ArgumentOutOfRangeException>(() => product.SetDisccountPercentaje(101));
@@ -135,7 +181,15 @@ namespace e_commerce_domain_Tests.entities.Product
         public void SetDisccountPercentaje_ShouldUpdateDisccountPercentaje_WhenDisccountPercentajeIsValid()
         {
             // Arrange
-            TestProduct product = new("Producto de Prueba", "Descripción", 100, 10, 5, 50);
+            TestProduct product = new(new GenericProductDTO()
+            {
+                Name = "Producto de Prueba",
+                Description = "Descripción",
+                GrossValue = 100,
+                DiscPercentaje = 10,
+                TaxPercentaje = 5,
+                Stock = 50
+            });
             decimal newDisccountPercentaje = 20;
 
             // Act
@@ -149,7 +203,15 @@ namespace e_commerce_domain_Tests.entities.Product
         public void SetStock_ShouldThrowArgumentOutOfRangeException_WhenStockIsLessThanZero()
         {
             // Arrange
-            TestProduct product = new("Producto de Prueba", "Descripción", 100, 10, 5, 50);
+            TestProduct product = new(new GenericProductDTO()
+            {
+                Name = "Producto de Prueba",
+                Description = "Descripción",
+                GrossValue = 100,
+                DiscPercentaje = 10,
+                TaxPercentaje = 5,
+                Stock = 50
+            });
 
             // Act & Assert
             Assert.Throws<ArgumentOutOfRangeException>(() => product.SetStock(-1));
@@ -159,7 +221,15 @@ namespace e_commerce_domain_Tests.entities.Product
         public void SetStock_ShouldUpdateStock_WhenStockIsGreaterThanOrEqualToZero()
         {
             // Arrange
-            TestProduct product = new("Producto de Prueba", "Descripción", 100, 10, 5, 50);
+            TestProduct product = new(new GenericProductDTO()
+            {
+                Name = "Producto de Prueba",
+                Description = "Descripción",
+                GrossValue = 100,
+                DiscPercentaje = 10,
+                TaxPercentaje = 5,
+                Stock = 50
+            });
             int newStock = 100;
 
             // Act

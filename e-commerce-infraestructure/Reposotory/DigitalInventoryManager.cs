@@ -1,6 +1,7 @@
-﻿using e_commerce_domain.entities.Product;
+﻿using e_commerce_domain.DTO;
+using e_commerce_domain.entities.Product;
+using e_commerce_domain.enums;
 using e_commerce_domain.observer.contracts;
-using e_commerce_domain.repositories;
 
 namespace e_commerce_infraestructure.Reposotory
 {
@@ -15,28 +16,60 @@ namespace e_commerce_infraestructure.Reposotory
 
         private void InitializeProducts()
         {
-            for (int i = 1; i <= 10; i++)
+            DigitalProduct product1 = new(new GenericProductDTO()
             {
-                DigitalProduct product = new DigitalProduct(
-                    $"DigitalProduct{i}",
-                    $"Description for DigitalProduct{i}",
-                    50m + i, // grossValue
-                    5m, // discPercentaje
-                    10m, // taxPercentaje
-                    100, // stock
-                    $"Format{i}", // fileFormat
-                    1.5f * i // size
-                );
-                product.Id = Guid.NewGuid();
-                _productRepository.Add(product);
-            }
+                Name = "Libro",
+                Description = "Libro",
+                GrossValue = 1000,
+                DiscPercentaje = (decimal)(0.1),
+                TaxPercentaje = (decimal)(0.19),
+                Stock = 10,
+                FileFormat = "PDF",
+                Size = 10,
+                ProductType = ProductType.Digital
+            });
+
+            DigitalProduct product2 = new(new GenericProductDTO()
+            {
+                Name = "Windows",
+                Description = "Windows",
+                GrossValue = 5000,
+                DiscPercentaje = (decimal)(0.1),
+                TaxPercentaje = (decimal)(0.19),
+                Stock = 7,
+                FileFormat = "exe",
+                Size = 30,
+                ProductType = ProductType.Digital
+            });
+
+            DigitalProduct product3 = new(new GenericProductDTO()
+            {
+                Name = "Office",
+                Description = "Office",
+                GrossValue = 3000,
+                DiscPercentaje = (decimal)(0.1),
+                TaxPercentaje = (decimal)(0.19),
+                Stock = 5,
+                FileFormat = "exe",
+                Size = 20,
+                ProductType = ProductType.Digital
+            });
+
+            product1.Id = new Guid("ba7520ce-c31e-432f-bdf3-4d1aac9251fa");
+            product2.Id = new Guid("138981da-0c62-44ac-87ee-e12a827bd294");
+            product3.Id = new Guid("54d3f89f-62ff-4a93-9390-d49dae493a26");
+
+            _productRepository.Add(product1);
+            _productRepository.Add(product2);
+            _productRepository.Add(product3);
         }
 
-        public override void AddProduct(ProductBase product)
+        public override void AddProduct(GenericProductDTO product)
         {
             DigitalProduct digitalProduct = CreateProduct(product);
             _productRepository.Add(digitalProduct);
-            NotifyProductAdded(product);
+
+            NotifyProductAdded(digitalProduct);
         }
         public override void DeleteProduct(Guid idProduct)
         {
@@ -49,11 +82,9 @@ namespace e_commerce_infraestructure.Reposotory
             NotifyProductDeleted(idProduct);
         }
 
-        private DigitalProduct CreateProduct(ProductBase product)
+        private DigitalProduct CreateProduct(GenericProductDTO product)
         {
-            DigitalProduct digitalProduct = new(product.GetName(), product.GetDescription(),
-                product.GetGrossValue(), product.GetDisccounPercentaje(), product.GetTaxPercentaje(), product.GetStock(), "", 0);
-            digitalProduct.Id = product.Id;
+            DigitalProduct digitalProduct = new(product);
             return digitalProduct;
         }
 
@@ -71,19 +102,73 @@ namespace e_commerce_infraestructure.Reposotory
         }
 
 
-        public override IEnumerable<ProductBase> GetAll()
+        public override IEnumerable<GenericProductDTO> GetAll()
         {
-            return _productRepository;
+            List<GenericProductDTO> products = new();
+            foreach (var product in _productRepository)
+            {
+                products.Add(new GenericProductDTO()
+                {
+                    Id = product.Id,
+                    Name = product.GetName(),
+                    Description = product.GetDescription(),
+                    GrossValue = product.GetGrossValue(),
+                    DiscPercentaje = product.GetDisccounPercentaje(),
+                    TaxPercentaje = product.GetTaxPercentaje(),
+                    Stock = product.GetStock(),
+                    FileFormat = product.GetFileFormat(),
+                    Size = product.GetSize(),
+                    ProductType = ProductType.Digital
+                });
+            }
+
+            return products;
         }
 
-        public override ProductBase GetProductById(Guid id)
+        public override GenericProductDTO GetProductById(Guid id)
         {
-            return _productRepository.FirstOrDefault(p => p.Id == id);
+            var product = _productRepository.FirstOrDefault(p => p.Id == id);
+            if (product == null)
+            {
+                throw new NullReferenceException($"El producto con id {id} no existe");
+            }
+
+            return new GenericProductDTO()
+            {
+                Id = product.Id,
+                Name = product.GetName(),
+                Description = product.GetDescription(),
+                GrossValue = product.GetGrossValue(),
+                DiscPercentaje = product.GetDisccounPercentaje(),
+                TaxPercentaje = product.GetTaxPercentaje(),
+                Stock = product.GetStock(),
+                FileFormat = product.GetFileFormat(),
+                Size = product.GetSize(),
+                ProductType = ProductType.Digital
+            };
         }
 
-        public override ProductBase GetProductByName(string name)
+        public override GenericProductDTO GetProductByName(string name)
         {
-            return _productRepository.FirstOrDefault(p => p.GetName().ToLowerInvariant() == name.ToLowerInvariant());
+            var product = _productRepository.FirstOrDefault(p => p.GetName().ToLowerInvariant() == name.ToLowerInvariant());
+            if (product == null)
+            {
+                throw new NullReferenceException($"El producto con nombre {name} no existe");
+            }
+
+            return new GenericProductDTO()
+            {
+                Id = product.Id,
+                Name = product.GetName(),
+                Description = product.GetDescription(),
+                GrossValue = product.GetGrossValue(),
+                DiscPercentaje = product.GetDisccounPercentaje(),
+                TaxPercentaje = product.GetTaxPercentaje(),
+                Stock = product.GetStock(),
+                FileFormat = product.GetFileFormat(),
+                Size = product.GetSize(),
+                ProductType = ProductType.Digital
+            };
         }
     }
 }
